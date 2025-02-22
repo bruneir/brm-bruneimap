@@ -1,0 +1,50 @@
+---
+title: 'Mapping Brunei: An Introduction to Spatial Data Analysis with `{bruneimap}` in R'
+subtitle: 'Brunei R User Group Meetup'
+author:
+  - name: Alvin Bong
+    affiliations:
+      - 'BSc Mathematics, Universiti Brunei Darussalam'
+  # - name: Haziq Jamil
+  #   orcid: 0000-0003-3298-1010
+  #   affiliations: 
+  #     - 'Assistant Professor in Statistics, Universiti Brunei Darussalam<br>Visiting Fellow, London School of Economics and Political Science'
+  #     - '<span style="font-style:normal;">[`https://haziqj.ml/kaust-stat24/`](https://haziqj.ml/kaust-stat24/)</span>'
+date: "28 February 2025"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| echo: false
+library(INLAvaan)
+# library(lavaan)
+# library(semPlot)
+# library(gt)
+library(tidyverse)
+library(gt)
+theme_set(theme_bw())
+```
+
+```{r latex_shortcuts}
+#| echo: false
+#| results: asis
+#| eval: !expr knitr::is_html_output()
+
+# LaTeX shortcuts 
+cat(readr::read_file("maths_shortcuts.tex"))
+``` 
+
+# Introduction
+
+
+
+# The `{bruneimap}` package
+
+# Examples
+
+# Thanks! {.transition-slide-ubdblue}
+
+[`https://bruneir.github.io/brm-bruneimap`](https://bruneir.github.io/brm-bruneimap)
+
+## References {.appendix}
