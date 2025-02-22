@@ -5,6 +5,7 @@ author:
   - name: Alvin Bong
     affiliations:
       - 'BSc Mathematics, Universiti Brunei Darussalam'
+      - '<span style="font-style:normal;">[`https://bruneir.github.io/brm-bruneimap/`](https://bruneir.github.io/brm-bruneimap/)</span>'
   # - name: Haziq Jamil
   #   orcid: 0000-0003-3298-1010
   #   affiliations: 
@@ -15,12 +16,12 @@ editor_options:
   chunk_output_type: console
 ---
 
+## Welcome
+
 ```{r}
 #| echo: false
-library(INLAvaan)
-# library(lavaan)
-# library(semPlot)
-# library(gt)
+library(bruneimap)
+library(osmdata)
 library(tidyverse)
 library(gt)
 theme_set(theme_bw())
@@ -35,7 +36,508 @@ theme_set(theme_bw())
 cat(readr::read_file("maths_shortcuts.tex"))
 ``` 
 
-# Introduction
+
+Say something about Brunei R meetup... Thanks for coming etc.
+
+## Get started
+
+What's the plan today
+
+- Install packages?
+- Follow along
+- Helpers standing by
+
+# Introduction {.transition-slide-ubdyellow}
+
+## Types of spatial data
+
+::::: {.panel-tabset}
+
+### Points
+
+:::: {.columns}
+
+::: {.column width=60%}
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+#| fig-align: center
+ggplot() +
+  geom_sf(data = dis_sf) +
+  geom_point(data = masjid, aes(latitude, longitude), col = "red3", size = 1)
+```
+
+:::
+
+::: {.column width=40%}
+Location of Masjids in Brunei
+:::
+
+::::
+
+### Lines
+
+
+:::: {.columns}
+
+::: {.column width=60%}
+
+```{r}
+#| message: false
+#| warning: false
+#| cache: true
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+#| fig-align: center
+
+ggplot()
+
+```
+
+:::
+
+::: {.column width=40%}
+Road network in Rimba
+:::
+
+::::
+
+### Polygons
+
+:::: {.columns}
+
+::: {.column width=60%}
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+#| fig-align: center
+
+pop_sf <-
+  census2021 |>
+  mutate(district = gsub("Brunei Muara", "Brunei-Muara", district)) |>
+  right_join(kpg_sf) |>
+  st_set_geometry("geometry")
+
+ggplot() +
+  geom_sf(
+    data = pop_sf,
+    aes(fill = population, col = population),
+    col = NA,
+    inherit.aes = FALSE,
+    alpha = 0.85
+  ) +
+  geom_sf(data = mkm_sf, aes(col = "1"), inherit.aes = FALSE, fill = NA, linewidth = 0.5) +
+  geom_sf(data = dis_sf, aes(col = "1"), inherit.aes = FALSE, fill = NA, linewidth = 1) +
+  scale_fill_viridis_b(
+    name = "Population",
+    na.value = "#f9f9f9",
+    # na.value = NA,
+    labels = scales::comma,
+    breaks = c(100, 500, 1000, 5000, 10000, 50000)
+  ) +
+  scale_colour_manual(values = "gray10", name = NULL, labels = "Unpopulated\narea") +
+  guides(fill = guide_coloursteps(order = 1)) 
+```
+
+:::
+
+::: {.column width=40%}
+Population by kampong in Brunei
+:::
+
+::::
+
+### Raster
+
+An important spatial data is raster or grid data.
+These are Pixelated (or gridded) data where each pixel is associated with a specific geographical location E.g. satellite imagery, digital elevation models, etc.
+
+Used alot in geoscience!
+
+Not discussing these today...
+
+
+:::::
+
+## Spatial data in R
+
+- *Simple features* refers to a formal standard (ISO 19125-1:2004) that describes how objects in the real world can be represented in computers, with emphasis on the spatial geometry of these objects.
+- The `{sf}` package [@pebesma2023simple] provides support for handling spatial data in R.
+
+![](figures/spatialtypes.png){fig-align="center"}
+
+::: {.notes}
+
+R has well-supported classes for storing spatial data (sp) and interfacing to the above mentioned environments (rgdal, rgeos), but has so far lacked a complete implementation of simple features, making conversions at times convoluted, inefficient or incomplete. The package sf tries to fill this gap, and aims at succeeding sp in the long term.
+
+
+The standard is widely implemented in spatial databases (such as PostGIS), commercial GIS (e.g., ESRI ArcGIS) and forms the vector data basis for libraries such as GDAL. A subset of simple features forms the GeoJSON standard.
+:::
+
+## Spatial data in R (cont.)
+
+```{r}
+#| echo: true
+#| code-line-numbers: "|2"
+pop_sf |> 
+  select(kampong, mukim, district, population, household, occ_liv_q)
+```
+
+- E.g. Data set with ($n=`r nrow(pop_sf)`$) features containing spatial attributes (`geometry`) and feature-related variables (`population`, `household`, `occ_liv_q`).
+
+- Notice the use of `{dplyr}` verbs! Link: [Tidyverse methods for `sf` objects](https://r-spatial.github.io/sf/reference/tidyverse.html)
+
+## Spatial analysis
+
+> To assess -- or at least, to account -- for spatial patterns in the data. 
+
+- Crucial to acknowledge the inherent non-randomness and interdependence within spatial data, increasing the validity and accuracy.
+
+- Numerous motivations for doing so including
+  
+  - Agriculture [@besag1999bayesian]
+  - Ecology [@brewer2007variable]
+  - Education [@wall2004close]
+  - Epidemiology [@xie2017enhancing; @li2011asthma]
+  - Image analysis [@gavin1997subpixel]
+
+- Spatial statistics are indispensable for capturing the complexity of spatial data, leading to more accurate, reliable, and nuanced insights and decisions.
+
+::: {.notes}
+
+- Melanie Wall: To provide an example of this type of ecological spatial regression using these models we consider state level summary data related to the SAT college entrance exam for the year 1999.
+
+- Spatial GAM to include X, Y coordinates for better disease mapping.
+
+- Athma exacerbation and proximity of residence to major roads in Detroit, Michigan.
+
+:::
+
+## Types of spatial patterns
+
+```{r}
+#| warning: false
+eg_sf <- 
+  kpg_sf |>
+  mutate(x = st_coordinates(st_centroid(geometry))[, "X"],
+         y = st_coordinates(st_centroid(geometry))[, "Y"])
+
+# Positive autocorrelation
+eg_sf |>
+  mutate(shade = scales::rescale(y, c(0, 100))) |>
+  ggplot(aes(fill = shade)) +
+  geom_sf() +
+  scale_fill_viridis_c() +
+  scale_fill_viridis_c(breaks = c(0, 100), labels = c("Low", "High"),
+                       name = NULL) +
+  theme_void() -> p1
+
+# Zero autocorrelation
+eg_sf |>
+  mutate(shade = scales::rescale(runif(n(), 0, 100), c(0, 100))) |>
+  ggplot(aes(fill = shade)) +
+  geom_sf() +
+  scale_fill_viridis_c() +
+  scale_fill_viridis_c(breaks = c(0, 100), labels = c("Low", "High"),
+                       name = NULL) +
+  theme_void() -> p0
+
+# Negative autocorrelation
+negef_sf <-
+  eg_sf |>
+  mutate(xhigh = cut(x, breaks = seq(114.075926, 115.364672, length = 6 + 1)) |>
+           as.numeric() %% 2 == 0,
+         yhigh = cut(y, breaks = seq(4.002644, 5.045878, length = 6 + 1)) |>
+           as.numeric() %% 2 == 0,
+         shade = scales::rescale(as.numeric(xhigh == yhigh), c(0.2, 0.825)),
+         shade = rnorm(n(), mean = shade, sd = 0.04),
+         value = scales::rescale(shade, c(0, 100)))
+
+ggplot(negef_sf, aes(fill = value)) +
+  geom_sf() +
+  scale_fill_viridis_c(breaks = c(0, 100), labels = c("Low", "High"),
+                       name = NULL) +
+  theme_void() -> p2
+```
+
+::: {.panel-tabset}
+
+### Zero autocorrelation
+
+::: .columns
+
+::: {.column width="60%"}
+
+```{r}
+#| fig-align: center
+#| fig-width: 4
+#| fig-height: 4
+#| out-width: 75%
+p0
+```
+
+:::
+
+::: {.column width="30%"}
+
+<br>
+
+- Values are randomly distributed in space, independently of each other (and particularly its neighbours)
+
+- Lack of a spatial pattern.
+
+:::
+
+:::
+
+### Positive autocorrelation
+
+::: .columns
+
+::: {.column width="60%"}
+
+```{r}
+#| fig-align: center
+#| fig-width: 4
+#| fig-height: 4
+#| out-width: 75%
+p1
+```
+
+:::
+
+::: {.column width="30%"}
+
+<br>
+
+- Values are **non-randomly** distributed in space.
+
+- Large values are "attracting" other large values, and vice versa.
+
+- A clustering effect is present.
+
+:::
+
+:::
+
+### Negative autocorrelation
+
+::: .columns
+
+::: {.column width="60%"}
+
+```{r}
+#| fig-align: center
+#| fig-width: 4
+#| fig-height: 4
+#| out-width: 75%
+p2
+```
+
+:::
+
+::: {.column width="30%"}
+
+<br>
+
+- Values are **non-randomly** distributed in space.
+
+- Large values are "repelling" other large values, and vice versa.
+
+- A dispersion effect is present.
+
+:::
+
+:::
+
+:::
+
+
+<!-- ## Statistical test -->
+
+<!-- ### Moran's I test -->
+
+<!-- - A test of "global" trends: Looks for evidence of spatial heterogeneity across the entire study area indexed by $i=1,\dots,M$. -->
+
+<!-- - The Moran's I test statistic [-@moran1948interpretation] is defined as: -->
+<!-- $$ -->
+<!-- I = \frac{M}{\sum_{i}{\sum_{j}{w_{ij}}}} \frac{\sum_{i}{\sum_{j}{w_{ij}(y_i - \bar{y})(y_j - \bar{y})}}}{\sum_{i}{(y_i - \bar{y})^2}} \in [-1, 1] -->
+<!-- $$ -->
+<!-- where $w_{ij}$ is the "spatial weight" between locations $i$ and $j$. -->
+
+<!-- - The null hypothesis is "the data are randomly distributed in space  (no spatial autocorrelation)", and is typically compared against an alternative of ">". -->
+
+<!-- - The Moran's I value can be thought of as the ratio between the observed spatial variability and the expected variability. -->
+
+<!-- ## Statistical test -->
+
+<!-- ### Moran's I test (cont.) -->
+
+<!-- Two common approaches for $p$-value calculation: -->
+
+<!-- ::::: {.columns} -->
+
+<!-- :::: {.column width=50%} -->
+<!-- #### $Z$-test -->
+
+<!-- - Under $H_0$, $\operatorname{E}(I) = -1/(M-1)$.  -->
+<!-- - The variance $\operatorname{Var}(I)$ also has a closed form expression. -->
+<!-- - So, the CLT is invoked and a $p$-values based on a $Z$ score is calculated. -->
+<!-- - In practice, the normality assumption is not always met. -->
+
+<!-- :::: -->
+
+
+<!-- :::: {.column width=50%} -->
+<!-- #### Permutation test -->
+
+<!-- - Under $H_0$, the spatial pattern is random, so we can shuffle the values and recompute $I$. -->
+
+<!-- - Compute the proportion of times $I$ is larger than the observed value.  -->
+
+<!-- - The Monte Carlo approach can be more accurate. -->
+
+<!-- :::: -->
+
+<!-- ::::: -->
+
+<!-- ## Neighbour definitions -->
+
+<!-- <!-- Weights $W = (w_{ij})$ defined as a measure of "closeness". --> -->
+
+<!-- ```{r} -->
+<!-- #| fig-align: center -->
+<!-- ggplot(fakecountry_sf) + -->
+<!--   geom_sf() + -->
+<!--   geom_sf(data = fakecountry_sf |> filter(id %in% c(15, 77, 100)),  -->
+<!--           fill = "red3") + -->
+<!--   geom_sf(data = fakecountry_sf |> filter(id %in% c(16, 5, 12, 42, 13, -->
+<!--                                                     94, 51,78, 92, 97, -->
+<!--                                                     76, 62, 22, 84)),  -->
+<!--           fill = "steelblue3") +   -->
+<!--   geom_point(aes(x, y), size = 1) + -->
+<!--   ggforce::geom_circle(data = fakecountry_sf |> filter(id %in% c(15, 77, 100)), -->
+<!--                        aes(x0 = x, y0 = y, r = 12), fill = "red3", color = "red3", -->
+<!--                        linewidth = 1, linetype = "dotted", alpha = 0.3) +   -->
+<!--   theme_void() + -->
+<!--   labs(title = "Distance-based") -> p2 -->
+
+<!-- nb <- poly2nb(fakecountry_sf, queen = TRUE, row.names = fakecountry_sf$id) -->
+<!-- names(nb) <- fakecountry_sf$id -->
+<!-- idx <- c(15, 77, 100) -->
+<!-- nb_idx <- nb[names(nb) %in% c(15, 77, 100)] |> unlist(use.names = FALSE) -->
+<!-- nb_idx <- fakecountry_sf$id[nb_idx] -->
+<!-- ggplot(fakecountry_sf) + -->
+<!--   geom_sf() + -->
+<!--   geom_sf(data = fakecountry_sf |> filter(id %in% idx),  -->
+<!--           fill = "red3") + -->
+<!--   geom_sf(data = fakecountry_sf |> filter(id %in% nb_idx),  -->
+<!--           fill = "steelblue3") +   -->
+<!--   theme_void() + -->
+<!--   labs(title = "Contiguity-based") -> p1 -->
+
+<!-- cowplot::plot_grid(p1, p2) -->
+<!-- ``` -->
+
+<!-- ::: {.notes} -->
+
+<!-- - A common approach is to give a weight of 1 if two zones are neighbors, and 0 otherwise -->
+
+<!-- - Another common approach might be to give a weight of 1 to k nearest neighbors, 0 otherwise -->
+
+<!-- - An alternative is to use a distance decay function for assigning weights.  -->
+
+<!-- - Sometimes the length of a shared edge is used for assigning different weights to neighbors -->
+
+<!-- - The selection of spatial weights matrix should be guided by theory about the phenomenon in question. The value of I is quite sensitive to the weights and can influence the conclusions you make about a phenomenon, especially when using distances. -->
+
+<!-- ::: -->
+
+<!-- ## Adjacency matrix -->
+
+<!-- For areal data it is quite common to implement $W=A$ where $A = (a_{ij})$ is an adjacency matrix with the following definition: -->
+<!-- $$ -->
+<!-- a_{ij} = \begin{cases} -->
+<!-- 1 & i \sim j \text{ where } i \neq j \\ -->
+<!-- 0 & \text{otherwise.} -->
+<!-- \end{cases} -->
+<!-- $$ -->
+
+<!-- ::: {.columns} -->
+
+<!-- ::: {.column width=32%} -->
+<!-- ```{r} -->
+<!-- #| fig-align: center -->
+<!-- #| fig-width: 4 -->
+<!-- #| fig-height: 3.5 -->
+<!-- #| out-width: 100% -->
+<!-- smallfc_sf <- -->
+<!--   fakecountry_sf |> -->
+<!--   filter(id %in% c(98, 95, 86, 89, 71))  -->
+<!-- dat_sp <- as(smallfc_sf, "Spatial") -->
+<!-- nb <- poly2nb(dat_sp) -->
+<!-- nb_sf <- nb2lines(nb, coords = sp::coordinates(dat_sp), as_sf = TRUE) -->
+<!-- nb_sf <- st_set_crs(nb_sf, st_crs(smallfc_sf)) -->
+
+<!-- smallfc_sf$id <- LETTERS[1:5] -->
+<!-- ggplot(smallfc_sf) + -->
+<!--   geom_sf(aes(fill = id), alpha = 0.83, col = NA) + -->
+<!--   geom_sf(data = nb_sf, linewidth = 1, col = "black") + -->
+<!--   geom_sf_label(aes(x, y, label = id)) + -->
+<!--   scale_fill_viridis_d(option = "turbo", guide = "none") + -->
+<!--   theme_void()  -->
+<!-- ``` -->
+<!-- ::: -->
+
+<!-- ::: {.column width=18%} -->
+<!-- <br> -->
+
+<!-- ```{r} -->
+<!-- # Adjacency matrix -->
+<!-- A <- nb2mat(nb, style = "B") -->
+<!-- attr(A, "call") <- NULL -->
+<!-- rownames(A) <- colnames(A) <- LETTERS[1:5] -->
+<!-- A -->
+<!-- ``` -->
+<!-- ::: -->
+
+<!-- ::: {.column width=50%} -->
+
+<!-- Other useful definitions: -->
+
+<!-- - $D = \operatorname{diag}(A1)$ is a diagonal matrix containing number of neighbours. -->
+
+<!-- - $\tilde W = D^{-1}A$ is the scaled adjacency matrix (row sums are 1). -->
+
+<!-- ::: -->
+
+<!-- ::: -->
+
+
+
+<!-- ## Example in R -->
+
+<!-- ```{r} -->
+<!-- #| echo: true -->
+<!-- library(spdep) -->
+<!-- y <- negef_sf$value -->
+<!-- Wl <- poly2nb(negef_sf) |> nb2listw(style = "B") -->
+<!-- moran.test(y, listw = Wl, alternative = "less") -->
+<!-- moran.mc(y, listw = Wl, nsim = 1000, alternative = "less") -->
+<!-- ``` -->
+
+
+ 
+ 
 
 
 

@@ -29,7 +29,92 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-  </style>
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
   <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-39187ad79e75d8a2c870b82e8b511dfa.css">
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
@@ -141,17 +226,389 @@ Alvin Bong
         <p class="quarto-title-affiliation">
             BSc Mathematics, Universiti Brunei Darussalam
           </p>
+        <p class="quarto-title-affiliation">
+            <span style="font-style:normal;"><a href="https://bruneir.github.io/brm-bruneimap/"><code>https://bruneir.github.io/brm-bruneimap/</code></a></span>
+          </p>
     </div>
 </div>
 
   <p class="date">February 28, 2025</p>
 </section>
-<section id="appreciation" class="slide level2">
-<h2>Appreciation</h2>
+<section id="welcome" class="slide level2">
+<h2>Welcome</h2>
+<p>Say something about Brunei R meetup… Thanks for coming etc.</p>
+</section>
+<section id="get-started" class="slide level2">
+<h2>Get started</h2>
+<p>What’s the plan today</p>
+<ul>
+<li>Install packages?</li>
+<li>Follow along</li>
+<li>Helpers standing by</li>
+</ul>
+</section>
+<section>
+<section id="introduction" class="title-slide slide level1 transition-slide-ubdyellow center">
+<h1>Introduction</h1>
 
 </section>
-<section id="introduction" class="title-slide slide level1 center">
-<h1>Introduction</h1>
+<section id="types-of-spatial-data" class="slide level2">
+<h2>Types of spatial data</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Points</a></li><li><a href="#tabset-1-2">Lines</a></li><li><a href="#tabset-1-3">Polygons</a></li><li><a href="#tabset-1-4">Raster</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<p>Location of Masjids in Brunei</p>
+</div></div>
+</div>
+<div id="tabset-1-2">
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<p>Road network in Rimba</p>
+</div></div>
+</div>
+<div id="tabset-1-3">
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<p>Population by kampong in Brunei</p>
+</div></div>
+</div>
+<div id="tabset-1-4">
+<p>An important spatial data is raster or grid data. These are Pixelated (or gridded) data where each pixel is associated with a specific geographical location E.g. satellite imagery, digital elevation models, etc.</p>
+<p>Used alot in geoscience!</p>
+<p>Not discussing these today…</p>
+</div>
+</div>
+</div>
+</section>
+<section id="spatial-data-in-r" class="slide level2">
+<h2>Spatial data in R</h2>
+<ul>
+<li><em>Simple features</em> refers to a formal standard (ISO 19125-1:2004) that describes how objects in the real world can be represented in computers, with emphasis on the spatial geometry of these objects.</li>
+<li>The <code>{sf}</code> package <span class="citation" data-cites="pebesma2023simple">(<a href="#/references" role="doc-biblioref" onclick="">Pebesma and Bivand 2023</a>)</span> provides support for handling spatial data in R.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figures/spatialtypes.png" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+<aside class="notes">
+<p>R has well-supported classes for storing spatial data (sp) and interfacing to the above mentioned environments (rgdal, rgeos), but has so far lacked a complete implementation of simple features, making conversions at times convoluted, inefficient or incomplete. The package sf tries to fill this gap, and aims at succeeding sp in the long term.</p>
+<p>The standard is widely implemented in spatial databases (such as PostGIS), commercial GIS (e.g., ESRI ArcGIS) and forms the vector data basis for libraries such as GDAL. A subset of simple features forms the GeoJSON standard.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="spatial-data-in-r-cont." class="slide level2">
+<h2>Spatial data in R (cont.)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="|2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>pop_sf <span class="sc">|&gt;</span> </span>
+<span id="cb1-2"><a href=""></a>  <span class="fu">select</span>(kampong, mukim, district, population, household, occ_liv_q)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 438 features and 6 fields
+Geometry type: GEOMETRY
+Dimension:     XY
+Bounding box:  xmin: 114.0759 ymin: 4.002635 xmax: 115.3603 ymax: 5.045878
+Geodetic CRS:  WGS 84
+# A tibble: 438 × 7
+   kampong                mukim          district population household occ_liv_q
+   &lt;chr&gt;                  &lt;chr&gt;          &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 Kg. Biang              Mukim Amo      Temburo…         75        13        13
+ 2 Kg. Amo                Mukim Amo      Temburo…        394        83        62
+ 3 Kg. Sibut              Mukim Amo      Temburo…        192        37        27
+ 4 Kg. Sumbiling Baru     Mukim Amo      Temburo…         91        23        16
+ 5 Kg. Batang Duri        Mukim Amo      Temburo…        108        23        22
+ 6 Kg. Sumbiling Lama Amo Mukim Amo      Temburo…        143        23        21
+ 7 Kg. Selapon            Mukim Batu Ap… Temburo…        199        38        37
+ 8 Kg. Lepong             Mukim Bokok    Temburo…        123        26        22
+ 9 Kg. Semabat            Mukim Bokok    Temburo…         95        26        12
+10 Kg. Temada             Mukim Bokok    Temburo…         90        23        23
+# ℹ 428 more rows
+# ℹ 1 more variable: geometry &lt;POLYGON [°]&gt;</code></pre>
+</div>
+</div>
+<ul>
+<li><p>E.g. Data set with (<span class="math inline">\(n=438\)</span>) features containing spatial attributes (<code>geometry</code>) and feature-related variables (<code>population</code>, <code>household</code>, <code>occ_liv_q</code>).</p></li>
+<li><p>Notice the use of <code>{dplyr}</code> verbs! Link: <a href="https://r-spatial.github.io/sf/reference/tidyverse.html">Tidyverse methods for <code>sf</code> objects</a></p></li>
+</ul>
+</section>
+<section id="spatial-analysis" class="slide level2">
+<h2>Spatial analysis</h2>
+<blockquote>
+<p>To assess – or at least, to account – for spatial patterns in the data.</p>
+</blockquote>
+<ul>
+<li><p>Crucial to acknowledge the inherent non-randomness and interdependence within spatial data, increasing the validity and accuracy.</p></li>
+<li><p>Numerous motivations for doing so including</p>
+<ul>
+<li>Agriculture <span class="citation" data-cites="besag1999bayesian">(<a href="#/references" role="doc-biblioref" onclick="">Besag and Higdon 1999</a>)</span></li>
+<li>Ecology <span class="citation" data-cites="brewer2007variable">(<a href="#/references" role="doc-biblioref" onclick="">Brewer and Nolan 2007</a>)</span></li>
+<li>Education <span class="citation" data-cites="wall2004close">(<a href="#/references" role="doc-biblioref" onclick="">Wall 2004</a>)</span></li>
+<li>Epidemiology <span class="citation" data-cites="xie2017enhancing li2011asthma">(<a href="#/references" role="doc-biblioref" onclick="">Xie et al. 2017</a>; <a href="#/references" role="doc-biblioref" onclick="">Li et al. 2011</a>)</span></li>
+<li>Image analysis <span class="citation" data-cites="gavin1997subpixel">(<a href="#/references" role="doc-biblioref" onclick="">Gavin and Jennison 1997</a>)</span></li>
+</ul></li>
+<li><p>Spatial statistics are indispensable for capturing the complexity of spatial data, leading to more accurate, reliable, and nuanced insights and decisions.</p></li>
+</ul>
+<aside class="notes">
+<ul>
+<li><p>Melanie Wall: To provide an example of this type of ecological spatial regression using these models we consider state level summary data related to the SAT college entrance exam for the year 1999.</p></li>
+<li><p>Spatial GAM to include X, Y coordinates for better disease mapping.</p></li>
+<li><p>Athma exacerbation and proximity of residence to major roads in Detroit, Michigan.</p></li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="types-of-spatial-patterns" class="slide level2">
+<h2>Types of spatial patterns</h2>
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Zero autocorrelation</a></li><li><a href="#tabset-2-2">Positive autocorrelation</a></li><li><a href="#tabset-2-3">Negative autocorrelation</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<div class=".columns">
+<div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center" style="width:75.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<p><br></p>
+<ul>
+<li><p>Values are randomly distributed in space, independently of each other (and particularly its neighbours)</p></li>
+<li><p>Lack of a spatial pattern.</p></li>
+</ul>
+</div></div>
+</div>
+<div id="tabset-2-2">
+<div class=".columns">
+<div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center" style="width:75.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<p><br></p>
+<ul>
+<li><p>Values are <strong>non-randomly</strong> distributed in space.</p></li>
+<li><p>Large values are “attracting” other large values, and vice versa.</p></li>
+<li><p>A clustering effect is present.</p></li>
+</ul>
+</div></div>
+</div>
+<div id="tabset-2-3">
+<div class=".columns">
+<div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center" style="width:75.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:30%;">
+<p><br></p>
+<ul>
+<li><p>Values are <strong>non-randomly</strong> distributed in space.</p></li>
+<li><p>Large values are “repelling” other large values, and vice versa.</p></li>
+<li><p>A dispersion effect is present.</p></li>
+</ul>
+</div></div>
+</div>
+</div>
+</div>
+<!-- ## Statistical test -->
+<!-- ### Moran's I test -->
+<!-- - A test of "global" trends: Looks for evidence of spatial heterogeneity across the entire study area indexed by $i=1,\dots,M$. -->
+<!-- - The Moran's I test statistic [-@moran1948interpretation] is defined as: -->
+<!-- $$ -->
+<!-- I = \frac{M}{\sum_{i}{\sum_{j}{w_{ij}}}} \frac{\sum_{i}{\sum_{j}{w_{ij}(y_i - \bar{y})(y_j - \bar{y})}}}{\sum_{i}{(y_i - \bar{y})^2}} \in [-1, 1] -->
+<!-- $$ -->
+<!-- where $w_{ij}$ is the "spatial weight" between locations $i$ and $j$. -->
+<!-- - The null hypothesis is "the data are randomly distributed in space  (no spatial autocorrelation)", and is typically compared against an alternative of ">". -->
+<!-- - The Moran's I value can be thought of as the ratio between the observed spatial variability and the expected variability. -->
+<!-- ## Statistical test -->
+<!-- ### Moran's I test (cont.) -->
+<!-- Two common approaches for $p$-value calculation: -->
+<!-- ::::: {.columns} -->
+<!-- :::: {.column width=50%} -->
+<!-- #### $Z$-test -->
+<!-- - Under $H_0$, $\operatorname{E}(I) = -1/(M-1)$.  -->
+<!-- - The variance $\operatorname{Var}(I)$ also has a closed form expression. -->
+<!-- - So, the CLT is invoked and a $p$-values based on a $Z$ score is calculated. -->
+<!-- - In practice, the normality assumption is not always met. -->
+<!-- :::: -->
+<!-- :::: {.column width=50%} -->
+<!-- #### Permutation test -->
+<!-- - Under $H_0$, the spatial pattern is random, so we can shuffle the values and recompute $I$. -->
+<!-- - Compute the proportion of times $I$ is larger than the observed value.  -->
+<!-- - The Monte Carlo approach can be more accurate. -->
+<!-- :::: -->
+<!-- ::::: -->
+<!-- ## Neighbour definitions -->
+<!-- <!-- Weights $W = (w_{ij})$ defined as a measure of "closeness". -->
+<p>–&gt;</p>
+<!-- ```{r} -->
+<!-- #| fig-align: center -->
+<!-- ggplot(fakecountry_sf) + -->
+<!--   geom_sf() + -->
+<!--   geom_sf(data = fakecountry_sf |> filter(id %in% c(15, 77, 100)),  -->
+<!--           fill = "red3") + -->
+<!--   geom_sf(data = fakecountry_sf |> filter(id %in% c(16, 5, 12, 42, 13, -->
+<!--                                                     94, 51,78, 92, 97, -->
+<!--                                                     76, 62, 22, 84)),  -->
+<!--           fill = "steelblue3") +   -->
+<!--   geom_point(aes(x, y), size = 1) + -->
+<!--   ggforce::geom_circle(data = fakecountry_sf |> filter(id %in% c(15, 77, 100)), -->
+<!--                        aes(x0 = x, y0 = y, r = 12), fill = "red3", color = "red3", -->
+<!--                        linewidth = 1, linetype = "dotted", alpha = 0.3) +   -->
+<!--   theme_void() + -->
+<!--   labs(title = "Distance-based") -> p2 -->
+<!-- nb <- poly2nb(fakecountry_sf, queen = TRUE, row.names = fakecountry_sf$id) -->
+<!-- names(nb) <- fakecountry_sf$id -->
+<!-- idx <- c(15, 77, 100) -->
+<!-- nb_idx <- nb[names(nb) %in% c(15, 77, 100)] |> unlist(use.names = FALSE) -->
+<!-- nb_idx <- fakecountry_sf$id[nb_idx] -->
+<!-- ggplot(fakecountry_sf) + -->
+<!--   geom_sf() + -->
+<!--   geom_sf(data = fakecountry_sf |> filter(id %in% idx),  -->
+<!--           fill = "red3") + -->
+<!--   geom_sf(data = fakecountry_sf |> filter(id %in% nb_idx),  -->
+<!--           fill = "steelblue3") +   -->
+<!--   theme_void() + -->
+<!--   labs(title = "Contiguity-based") -> p1 -->
+<!-- cowplot::plot_grid(p1, p2) -->
+<!-- ``` -->
+<!-- ::: {.notes} -->
+<!-- - A common approach is to give a weight of 1 if two zones are neighbors, and 0 otherwise -->
+<!-- - Another common approach might be to give a weight of 1 to k nearest neighbors, 0 otherwise -->
+<!-- - An alternative is to use a distance decay function for assigning weights.  -->
+<!-- - Sometimes the length of a shared edge is used for assigning different weights to neighbors -->
+<!-- - The selection of spatial weights matrix should be guided by theory about the phenomenon in question. The value of I is quite sensitive to the weights and can influence the conclusions you make about a phenomenon, especially when using distances. -->
+<!-- ::: -->
+<!-- ## Adjacency matrix -->
+<!-- For areal data it is quite common to implement $W=A$ where $A = (a_{ij})$ is an adjacency matrix with the following definition: -->
+<!-- $$ -->
+<!-- a_{ij} = \begin{cases} -->
+<!-- 1 & i \sim j \text{ where } i \neq j \\ -->
+<!-- 0 & \text{otherwise.} -->
+<!-- \end{cases} -->
+<!-- $$ -->
+<!-- ::: {.columns} -->
+<!-- ::: {.column width=32%} -->
+<!-- ```{r} -->
+<!-- #| fig-align: center -->
+<!-- #| fig-width: 4 -->
+<!-- #| fig-height: 3.5 -->
+<!-- #| out-width: 100% -->
+<!-- smallfc_sf <- -->
+<!--   fakecountry_sf |> -->
+<!--   filter(id %in% c(98, 95, 86, 89, 71))  -->
+<!-- dat_sp <- as(smallfc_sf, "Spatial") -->
+<!-- nb <- poly2nb(dat_sp) -->
+<!-- nb_sf <- nb2lines(nb, coords = sp::coordinates(dat_sp), as_sf = TRUE) -->
+<!-- nb_sf <- st_set_crs(nb_sf, st_crs(smallfc_sf)) -->
+<!-- smallfc_sf$id <- LETTERS[1:5] -->
+<!-- ggplot(smallfc_sf) + -->
+<!--   geom_sf(aes(fill = id), alpha = 0.83, col = NA) + -->
+<!--   geom_sf(data = nb_sf, linewidth = 1, col = "black") + -->
+<!--   geom_sf_label(aes(x, y, label = id)) + -->
+<!--   scale_fill_viridis_d(option = "turbo", guide = "none") + -->
+<!--   theme_void()  -->
+<!-- ``` -->
+<!-- ::: -->
+<!-- ::: {.column width=18%} -->
+<!-- <br> -->
+<!-- ```{r} -->
+<!-- # Adjacency matrix -->
+<!-- A <- nb2mat(nb, style = "B") -->
+<!-- attr(A, "call") <- NULL -->
+<!-- rownames(A) <- colnames(A) <- LETTERS[1:5] -->
+<!-- A -->
+<!-- ``` -->
+<!-- ::: -->
+<!-- ::: {.column width=50%} -->
+<!-- Other useful definitions: -->
+<!-- - $D = \operatorname{diag}(A1)$ is a diagonal matrix containing number of neighbours. -->
+<!-- - $\tilde W = D^{-1}A$ is the scaled adjacency matrix (row sums are 1). -->
+<!-- ::: -->
+<!-- ::: -->
+<!-- ## Example in R -->
+<!-- ```{r} -->
+<!-- #| echo: true -->
+<!-- library(spdep) -->
+<!-- y <- negef_sf$value -->
+<!-- Wl <- poly2nb(negef_sf) |> nb2listw(style = "B") -->
+<!-- moran.test(y, listw = Wl, alternative = "less") -->
+<!-- moran.mc(y, listw = Wl, nsim = 1000, alternative = "less") -->
+<!-- ``` -->
+</section></section>
+<section id="the-bruneimap-package" class="title-slide slide level1 center">
+<h1>The <code>{bruneimap}</code> package</h1>
+
+</section>
+
+<section id="examples" class="title-slide slide level1 center">
+<h1>Examples</h1>
 
 </section>
 
@@ -160,9 +617,32 @@ Alvin Bong
 <h1>Thanks!</h1>
 <p><a href="https://bruneir.github.io/brm-bruneimap"><code>https://bruneir.github.io/brm-bruneimap</code></a></p>
 </section>
-<section id="references" class="slide level2 appendix">
+<section id="references" class="slide level2 appendix smaller scrollable">
 <h2>References</h2>
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-besag1999bayesian" class="csl-entry" role="listitem">
+Besag, Julian, and David Higdon. 1999. <span>“Bayesian Analysis of Agricultural Field Experiments.”</span> <em>Journal of the Royal Statistical Society Series B: Statistical Methodology</em> 61 (4): 691–746.
+</div>
+<div id="ref-brewer2007variable" class="csl-entry" role="listitem">
+Brewer, Mark J, and Andrew J Nolan. 2007. <span>“Variable Smoothing in Bayesian Intrinsic Autoregressions.”</span> <em>Environmetrics: The Official Journal of the International Environmetrics Society</em> 18 (8): 841–57.
+</div>
+<div id="ref-gavin1997subpixel" class="csl-entry" role="listitem">
+Gavin, John, and Christopher Jennison. 1997. <span>“A Subpixel Image Restoration Algorithm.”</span> <em>Journal of Computational and Graphical Statistics</em> 6 (2): 182–201.
+</div>
+<div id="ref-li2011asthma" class="csl-entry" role="listitem">
+Li, Shi, Stuart Batterman, Elizabeth Wasilevich, Huda Elasaad, Robert Wahl, and Bhramar Mukherjee. 2011. <span>“Asthma Exacerbation and Proximity of Residence to Major Roads: A Population-Based Matched Case-Control Study Among the Pediatric Medicaid Population in Detroit, Michigan.”</span> <em>Environmental Health</em> 10 (1): 1–10.
+</div>
+<div id="ref-pebesma2023simple" class="csl-entry" role="listitem">
+Pebesma, Edzer, and Roger Bivand. 2023. <em><span class="nocase">Spatial Data Science: With applications in R</span></em>. <span>Chapman and Hall/CRC</span>. <a href="https://doi.org/10.1201/9780429459016">https://doi.org/10.1201/9780429459016</a>.
+</div>
+<div id="ref-wall2004close" class="csl-entry" role="listitem">
+Wall, Melanie M. 2004. <span>“A Close Look at the Spatial Structure Implied by the CAR and SAR Models.”</span> <em>Journal of Statistical Planning and Inference</em> 121 (2): 311–24.
+</div>
+<div id="ref-xie2017enhancing" class="csl-entry" role="listitem">
+Xie, Sherrie, Rebecca Greenblatt, Michael Z Levy, and Blanca E Himes. 2017. <span>“Enhancing Electronic Health Record Data with Geospatial Information.”</span> <em>AMIA Summits on Translational Science Proceedings</em> 2017: 123.
+</div>
+</div>
 </section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">

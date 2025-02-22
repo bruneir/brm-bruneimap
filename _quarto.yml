@@ -1,5 +1,5 @@
 project:
-  title: "Pl-ligof-gent"
+  title: "brm-bruneimap"
   output-dir: "docs"
   render:
     - index.qmd
