@@ -2,21 +2,21 @@
 title: 'Mapping Brunei: An Introduction to Spatial Data Analysis with `{bruneimap}` in R'
 subtitle: 'Brunei R User Group Meetup'
 author:
-  - name: Alvin Bong
-    affiliations:
-      - 'BSc Mathematics, Universiti Brunei Darussalam'
-      - '<span style="font-style:normal;">[`https://bruneir.github.io/brm-bruneimap/`](https://bruneir.github.io/brm-bruneimap/)</span>'
-  # - name: Haziq Jamil
-  #   orcid: 0000-0003-3298-1010
-  #   affiliations: 
   #     - 'Assistant Professor in Statistics, Universiti Brunei Darussalam<br>Visiting Fellow, London School of Economics and Political Science'
-  #     - '<span style="font-style:normal;">[`https://haziqj.ml/kaust-stat24/`](https://haziqj.ml/kaust-stat24/)</span>'
+- name: Alvin Bong
+affiliations:
+- 'BSc Mathematics, Universiti Brunei Darussalam'
+- '<span style="font-style:normal;">[`https://bruneir.github.io/brm-bruneimap/`](https://bruneir.github.io/brm-bruneimap/)</span>'
+# - name: Haziq Jamil
+#   orcid: 0000-0003-3298-1010
+#   affiliations:
+#     - '<span style="font-style:normal;">[`https://haziqj.ml/kaust-stat24/`](https://haziqj.ml/kaust-stat24/)</span>'
 date: "28 February 2025"
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
-## Welcome
+## Preliminaries
 
 ```{r}
 #| echo: false
@@ -24,6 +24,7 @@ library(bruneimap)
 library(osmdata)
 library(tidyverse)
 library(gt)
+library(mapview)
 theme_set(theme_bw())
 ```
 
@@ -32,22 +33,48 @@ theme_set(theme_bw())
 #| results: asis
 #| eval: !expr knitr::is_html_output()
 
-# LaTeX shortcuts 
+# LaTeX shortcuts
 cat(readr::read_file("maths_shortcuts.tex"))
-``` 
+```
 
+Welcome to the First Brunei R User Group Meetup of 2025! 🎉
 
-Say something about Brunei R meetup... Thanks for coming etc.
+Celebrating our 1st Anniversary
 
-## Get started
+> "The RUGS mission is to facilitate the person-to-person exchange of knowledge in small group settings on a global scale."
+> — *R Consortium*
 
-What's the plan today
+::: {.columns}
 
-- Install packages?
-- Follow along
-- Helpers standing by
+::: {.column width="60%"}
+About Us
 
-# Introduction {.transition-slide-ubdyellow}
+-   A community of UBD-ians and R enthusiasts
+-   Building an R user community in Brunei
+-   Advocating for Open Source collaboration
+:::
+
+::: {.column width=30%}
+![](figures/bruneiR-profile.png){width="5% fig-align="right"}
+:::
+
+:::
+
+## Prelim (Cont.)
+
+**Past Events:** Intro to R Workshop, R>aya Meetup & Sharing Sessions
+<br>
+
+**Goal:** In conjunction with National Day, our team present you `{bruneimap}` package, containing spatial data on Brunei (country, amenities)
+<br>
+
+**Plan for today**
+
+- Part I: refresher on spatial data & analysis
+
+- Part II: demonstrate datasets & features of `{bruneimap}`
+
+# I) Introduction {.transition-slide-ubdyellow}
 
 ## Types of spatial data
 
@@ -81,28 +108,14 @@ Location of Masjids in Brunei
 
 ### Lines
 
-
 :::: {.columns}
 
 ::: {.column width=60%}
-
-```{r}
-#| message: false
-#| warning: false
-#| cache: true
-#| fig-width: 7
-#| fig-height: 5.5
-#| out-width: 100%
-#| fig-align: center
-
-ggplot()
-
-```
-
+![](figures/brn_highway.png){fig-align="center"}
 :::
 
 ::: {.column width=40%}
-Road network in Rimba
+Brunei Highways
 :::
 
 ::::
@@ -145,7 +158,7 @@ ggplot() +
     breaks = c(100, 500, 1000, 5000, 10000, 50000)
   ) +
   scale_colour_manual(values = "gray10", name = NULL, labels = "Unpopulated\narea") +
-  guides(fill = guide_coloursteps(order = 1)) 
+  guides(fill = guide_coloursteps(order = 1))
 ```
 
 :::
@@ -179,7 +192,6 @@ Not discussing these today...
 
 R has well-supported classes for storing spatial data (sp) and interfacing to the above mentioned environments (rgdal, rgeos), but has so far lacked a complete implementation of simple features, making conversions at times convoluted, inefficient or incomplete. The package sf tries to fill this gap, and aims at succeeding sp in the long term.
 
-
 The standard is widely implemented in spatial databases (such as PostGIS), commercial GIS (e.g., ESRI ArcGIS) and forms the vector data basis for libraries such as GDAL. A subset of simple features forms the GeoJSON standard.
 :::
 
@@ -187,9 +199,9 @@ The standard is widely implemented in spatial databases (such as PostGIS), comme
 
 ```{r}
 #| echo: true
-#| code-line-numbers: "|2"
-pop_sf |> 
-  select(kampong, mukim, district, population, household, occ_liv_q)
+
+pop_sf |>
+  select(kampong, mukim, district, population, household, geometry)
 ```
 
 - E.g. Data set with ($n=`r nrow(pop_sf)`$) features containing spatial attributes (`geometry`) and feature-related variables (`population`, `household`, `occ_liv_q`).
@@ -198,12 +210,11 @@ pop_sf |>
 
 ## Spatial analysis
 
-> To assess -- or at least, to account -- for spatial patterns in the data. 
+> To assess -- or at least, to account -- for spatial patterns in the data.
 
 - Crucial to acknowledge the inherent non-randomness and interdependence within spatial data, increasing the validity and accuracy.
 
 - Numerous motivations for doing so including
-  
   - Agriculture [@besag1999bayesian]
   - Ecology [@brewer2007variable]
   - Education [@wall2004close]
@@ -222,11 +233,24 @@ pop_sf |>
 
 :::
 
-## Types of spatial patterns
+## Spatial analysis (cont.)
 
+Many areas of analysis:
+
+- spatial autocorrelation
+- spatial interpolation
+- disease (risk) modelling
+- mobility networks
+
+**Statistical tests:** Moran I (global, local), Getis Ord, Geary’s C
+
+Will not go too theoretical, focus more on applications in Section II
+
+
+## Types of spatial patterns
 ```{r}
 #| warning: false
-eg_sf <- 
+eg_sf <-
   kpg_sf |>
   mutate(x = st_coordinates(st_centroid(geometry))[, "X"],
          y = st_coordinates(st_centroid(geometry))[, "Y"])
@@ -362,13 +386,13 @@ p2
 :::
 
 
-<!-- ## Statistical test -->
+  <!-- ## Statistical test -->
 
-<!-- ### Moran's I test -->
+  <!-- ### Moran's I test -->
 
-<!-- - A test of "global" trends: Looks for evidence of spatial heterogeneity across the entire study area indexed by $i=1,\dots,M$. -->
+  <!-- - A test of "global" trends: Looks for evidence of spatial heterogeneity across the entire study area indexed by $i=1,\dots,M$. -->
 
-<!-- - The Moran's I test statistic [-@moran1948interpretation] is defined as: -->
+  <!-- - The Moran's I test statistic [-@moran1948interpretation] is defined as: -->
 <!-- $$ -->
 <!-- I = \frac{M}{\sum_{i}{\sum_{j}{w_{ij}}}} \frac{\sum_{i}{\sum_{j}{w_{ij}(y_i - \bar{y})(y_j - \bar{y})}}}{\sum_{i}{(y_i - \bar{y})^2}} \in [-1, 1] -->
 <!-- $$ -->
@@ -378,172 +402,476 @@ p2
 
 <!-- - The Moran's I value can be thought of as the ratio between the observed spatial variability and the expected variability. -->
 
-<!-- ## Statistical test -->
+  <!-- ## Statistical test -->
 
-<!-- ### Moran's I test (cont.) -->
+  <!-- ### Moran's I test (cont.) -->
 
-<!-- Two common approaches for $p$-value calculation: -->
+  <!-- Two common approaches for $p$-value calculation: -->
 
-<!-- ::::: {.columns} -->
+  <!-- ::::: {.columns} -->
 
-<!-- :::: {.column width=50%} -->
-<!-- #### $Z$-test -->
+  <!-- :::: {.column width=50%} -->
+  <!-- #### $Z$-test -->
 
-<!-- - Under $H_0$, $\operatorname{E}(I) = -1/(M-1)$.  -->
-<!-- - The variance $\operatorname{Var}(I)$ also has a closed form expression. -->
-<!-- - So, the CLT is invoked and a $p$-values based on a $Z$ score is calculated. -->
-<!-- - In practice, the normality assumption is not always met. -->
+  <!-- - Under $H_0$, $\operatorname{E}(I) = -1/(M-1)$. -->
+  <!-- - The variance $\operatorname{Var}(I)$ also has a closed form expression. -->
+  <!-- - So, the CLT is invoked and a $p$-values based on a $Z$ score is calculated. -->
+  <!-- - In practice, the normality assumption is not always met. -->
 
-<!-- :::: -->
-
-
-<!-- :::: {.column width=50%} -->
-<!-- #### Permutation test -->
-
-<!-- - Under $H_0$, the spatial pattern is random, so we can shuffle the values and recompute $I$. -->
-
-<!-- - Compute the proportion of times $I$ is larger than the observed value.  -->
-
-<!-- - The Monte Carlo approach can be more accurate. -->
-
-<!-- :::: -->
-
-<!-- ::::: -->
-
-<!-- ## Neighbour definitions -->
-
-<!-- <!-- Weights $W = (w_{ij})$ defined as a measure of "closeness". --> -->
-
-<!-- ```{r} -->
-<!-- #| fig-align: center -->
-<!-- ggplot(fakecountry_sf) + -->
-<!--   geom_sf() + -->
-<!--   geom_sf(data = fakecountry_sf |> filter(id %in% c(15, 77, 100)),  -->
-<!--           fill = "red3") + -->
-<!--   geom_sf(data = fakecountry_sf |> filter(id %in% c(16, 5, 12, 42, 13, -->
-<!--                                                     94, 51,78, 92, 97, -->
-<!--                                                     76, 62, 22, 84)),  -->
-<!--           fill = "steelblue3") +   -->
-<!--   geom_point(aes(x, y), size = 1) + -->
-<!--   ggforce::geom_circle(data = fakecountry_sf |> filter(id %in% c(15, 77, 100)), -->
-<!--                        aes(x0 = x, y0 = y, r = 12), fill = "red3", color = "red3", -->
-<!--                        linewidth = 1, linetype = "dotted", alpha = 0.3) +   -->
-<!--   theme_void() + -->
-<!--   labs(title = "Distance-based") -> p2 -->
-
-<!-- nb <- poly2nb(fakecountry_sf, queen = TRUE, row.names = fakecountry_sf$id) -->
-<!-- names(nb) <- fakecountry_sf$id -->
-<!-- idx <- c(15, 77, 100) -->
-<!-- nb_idx <- nb[names(nb) %in% c(15, 77, 100)] |> unlist(use.names = FALSE) -->
-<!-- nb_idx <- fakecountry_sf$id[nb_idx] -->
-<!-- ggplot(fakecountry_sf) + -->
-<!--   geom_sf() + -->
-<!--   geom_sf(data = fakecountry_sf |> filter(id %in% idx),  -->
-<!--           fill = "red3") + -->
-<!--   geom_sf(data = fakecountry_sf |> filter(id %in% nb_idx),  -->
-<!--           fill = "steelblue3") +   -->
-<!--   theme_void() + -->
-<!--   labs(title = "Contiguity-based") -> p1 -->
-
-<!-- cowplot::plot_grid(p1, p2) -->
-<!-- ``` -->
-
-<!-- ::: {.notes} -->
-
-<!-- - A common approach is to give a weight of 1 if two zones are neighbors, and 0 otherwise -->
-
-<!-- - Another common approach might be to give a weight of 1 to k nearest neighbors, 0 otherwise -->
-
-<!-- - An alternative is to use a distance decay function for assigning weights.  -->
-
-<!-- - Sometimes the length of a shared edge is used for assigning different weights to neighbors -->
-
-<!-- - The selection of spatial weights matrix should be guided by theory about the phenomenon in question. The value of I is quite sensitive to the weights and can influence the conclusions you make about a phenomenon, especially when using distances. -->
-
-<!-- ::: -->
-
-<!-- ## Adjacency matrix -->
-
-<!-- For areal data it is quite common to implement $W=A$ where $A = (a_{ij})$ is an adjacency matrix with the following definition: -->
-<!-- $$ -->
-<!-- a_{ij} = \begin{cases} -->
-<!-- 1 & i \sim j \text{ where } i \neq j \\ -->
-<!-- 0 & \text{otherwise.} -->
-<!-- \end{cases} -->
-<!-- $$ -->
-
-<!-- ::: {.columns} -->
-
-<!-- ::: {.column width=32%} -->
-<!-- ```{r} -->
-<!-- #| fig-align: center -->
-<!-- #| fig-width: 4 -->
-<!-- #| fig-height: 3.5 -->
-<!-- #| out-width: 100% -->
-<!-- smallfc_sf <- -->
-<!--   fakecountry_sf |> -->
-<!--   filter(id %in% c(98, 95, 86, 89, 71))  -->
-<!-- dat_sp <- as(smallfc_sf, "Spatial") -->
-<!-- nb <- poly2nb(dat_sp) -->
-<!-- nb_sf <- nb2lines(nb, coords = sp::coordinates(dat_sp), as_sf = TRUE) -->
-<!-- nb_sf <- st_set_crs(nb_sf, st_crs(smallfc_sf)) -->
-
-<!-- smallfc_sf$id <- LETTERS[1:5] -->
-<!-- ggplot(smallfc_sf) + -->
-<!--   geom_sf(aes(fill = id), alpha = 0.83, col = NA) + -->
-<!--   geom_sf(data = nb_sf, linewidth = 1, col = "black") + -->
-<!--   geom_sf_label(aes(x, y, label = id)) + -->
-<!--   scale_fill_viridis_d(option = "turbo", guide = "none") + -->
-<!--   theme_void()  -->
-<!-- ``` -->
-<!-- ::: -->
-
-<!-- ::: {.column width=18%} -->
-<!-- <br> -->
-
-<!-- ```{r} -->
-<!-- # Adjacency matrix -->
-<!-- A <- nb2mat(nb, style = "B") -->
-<!-- attr(A, "call") <- NULL -->
-<!-- rownames(A) <- colnames(A) <- LETTERS[1:5] -->
-<!-- A -->
-<!-- ``` -->
-<!-- ::: -->
-
-<!-- ::: {.column width=50%} -->
-
-<!-- Other useful definitions: -->
-
-<!-- - $D = \operatorname{diag}(A1)$ is a diagonal matrix containing number of neighbours. -->
-
-<!-- - $\tilde W = D^{-1}A$ is the scaled adjacency matrix (row sums are 1). -->
-
-<!-- ::: -->
-
-<!-- ::: -->
+  <!-- :::: -->
 
 
+  <!-- :::: {.column width=50%} -->
+  <!-- #### Permutation test -->
 
-<!-- ## Example in R -->
+  <!-- - Under $H_0$, the spatial pattern is random, so we can shuffle the values and recompute $I$. -->
 
-<!-- ```{r} -->
-<!-- #| echo: true -->
-<!-- library(spdep) -->
-<!-- y <- negef_sf$value -->
-<!-- Wl <- poly2nb(negef_sf) |> nb2listw(style = "B") -->
-<!-- moran.test(y, listw = Wl, alternative = "less") -->
-<!-- moran.mc(y, listw = Wl, nsim = 1000, alternative = "less") -->
-<!-- ``` -->
+  <!-- - Compute the proportion of times $I$ is larger than the observed value. -->
 
+  <!-- - The Monte Carlo approach can be more accurate. -->
 
- 
- 
+  <!-- :::: -->
+
+  <!-- ::::: -->
+
+  <!-- ## Neighbour definitions -->
+
+  <!-- <!-- Weights $W = (w_{ij})$ defined as a measure of "closeness". --> -->
+
+  <!-- ```{r} -->
+  <!-- #| fig-align: center -->
+  <!-- ggplot(fakecountry_sf) + -->
+  <!--   geom_sf() + -->
+  <!--   geom_sf(data = fakecountry_sf |> filter(id %in% c(15, 77, 100)), -->
+                   <!--           fill = "red3") + -->
+  <!--   geom_sf(data = fakecountry_sf |> filter(id %in% c(16, 5, 12, 42, 13, -->
+                                                             <!--                                                     94, 51,78, 92, 97, -->
+                                                             <!--                                                     76, 62, 22, 84)), -->
+                   <!--           fill = "steelblue3") + -->
+  <!--   geom_point(aes(x, y), size = 1) + -->
+  <!--   ggforce::geom_circle(data = fakecountry_sf |> filter(id %in% c(15, 77, 100)), -->
+                                <!--                        aes(x0 = x, y0 = y, r = 12), fill = "red3", color = "red3", -->
+                                <!--                        linewidth = 1, linetype = "dotted", alpha = 0.3) + -->
+  <!--   theme_void() + -->
+  <!--   labs(title = "Distance-based") -> p2 -->
+
+  <!-- nb <- poly2nb(fakecountry_sf, queen = TRUE, row.names = fakecountry_sf$id) -->
+  <!-- names(nb) <- fakecountry_sf$id -->
+  <!-- idx <- c(15, 77, 100) -->
+  <!-- nb_idx <- nb[names(nb) %in% c(15, 77, 100)] |> unlist(use.names = FALSE) -->
+  <!-- nb_idx <- fakecountry_sf$id[nb_idx] -->
+  <!-- ggplot(fakecountry_sf) + -->
+  <!--   geom_sf() + -->
+  <!--   geom_sf(data = fakecountry_sf |> filter(id %in% idx), -->
+                   <!--           fill = "red3") + -->
+  <!--   geom_sf(data = fakecountry_sf |> filter(id %in% nb_idx), -->
+                   <!--           fill = "steelblue3") + -->
+  <!--   theme_void() + -->
+  <!--   labs(title = "Contiguity-based") -> p1 -->
+
+  <!-- cowplot::plot_grid(p1, p2) -->
+  <!-- ``` -->
+
+  <!-- ::: {.notes} -->
+
+  <!-- - A common approach is to give a weight of 1 if two zones are neighbors, and 0 otherwise -->
+
+  <!-- - Another common approach might be to give a weight of 1 to k nearest neighbors, 0 otherwise -->
+
+  <!-- - An alternative is to use a distance decay function for assigning weights. -->
+
+  <!-- - Sometimes the length of a shared edge is used for assigning different weights to neighbors -->
+
+  <!-- - The selection of spatial weights matrix should be guided by theory about the phenomenon in question. The value of I is quite sensitive to the weights and can influence the conclusions you make about a phenomenon, especially when using distances. -->
+
+  <!-- ::: -->
+
+  <!-- ## Adjacency matrix -->
+
+  <!-- For areal data it is quite common to implement $W=A$ where $A = (a_{ij})$ is an adjacency matrix with the following definition: -->
+  <!-- $$ -->
+  <!-- a_{ij} = \begin{cases} -->
+  <!-- 1 & i \sim j \text{ where } i \neq j \\ -->
+  <!-- 0 & \text{otherwise.} -->
+  <!-- \end{cases} -->
+  <!-- $$ -->
+
+  <!-- ::: {.columns} -->
+
+  <!-- ::: {.column width=32%} -->
+  <!-- ```{r} -->
+  <!-- #| fig-align: center -->
+  <!-- #| fig-width: 4 -->
+  <!-- #| fig-height: 3.5 -->
+  <!-- #| out-width: 100% -->
+  <!-- smallfc_sf <- -->
+  <!--   fakecountry_sf |> -->
+  <!--   filter(id %in% c(98, 95, 86, 89, 71)) -->
+  <!-- dat_sp <- as(smallfc_sf, "Spatial") -->
+  <!-- nb <- poly2nb(dat_sp) -->
+  <!-- nb_sf <- nb2lines(nb, coords = sp::coordinates(dat_sp), as_sf = TRUE) -->
+  <!-- nb_sf <- st_set_crs(nb_sf, st_crs(smallfc_sf)) -->
+
+  <!-- smallfc_sf$id <- LETTERS[1:5] -->
+  <!-- ggplot(smallfc_sf) + -->
+  <!--   geom_sf(aes(fill = id), alpha = 0.83, col = NA) + -->
+  <!--   geom_sf(data = nb_sf, linewidth = 1, col = "black") + -->
+  <!--   geom_sf_label(aes(x, y, label = id)) + -->
+  <!--   scale_fill_viridis_d(option = "turbo", guide = "none") + -->
+  <!--   theme_void() -->
+  <!-- ``` -->
+  <!-- ::: -->
+
+  <!-- ::: {.column width=18%} -->
+  <!-- <br> -->
+
+  <!-- ```{r} -->
+  <!-- # Adjacency matrix -->
+  <!-- A <- nb2mat(nb, style = "B") -->
+  <!-- attr(A, "call") <- NULL -->
+  <!-- rownames(A) <- colnames(A) <- LETTERS[1:5] -->
+  <!-- A -->
+  <!-- ``` -->
+  <!-- ::: -->
+
+  <!-- ::: {.column width=50%} -->
+
+  <!-- Other useful definitions: -->
+
+  <!-- - $D = \operatorname{diag}(A1)$ is a diagonal matrix containing number of neighbours. -->
+
+  <!-- - $\tilde W = D^{-1}A$ is the scaled adjacency matrix (row sums are 1). -->
+
+  <!-- ::: -->
+
+  <!-- ::: -->
 
 
 
-# The `{bruneimap}` package
+  <!-- ## Example in R -->
 
-# Examples
+  <!-- ```{r} -->
+  <!-- #| echo: true -->
+  <!-- library(spdep) -->
+  <!-- y <- negef_sf$value -->
+  <!-- Wl <- poly2nb(negef_sf) |> nb2listw(style = "B") -->
+  <!-- moran.test(y, listw = Wl, alternative = "less") -->
+  <!-- moran.mc(y, listw = Wl, nsim = 1000, alternative = "less") -->
+  <!-- ``` -->
+
+
+# II) The `{bruneimap}` package {.transition-slide-ubdyellow}
+
+## Spatial datasets
+::::: {.panel-tabset}
+
+### Brunei
+```{r}
+#| echo: true
+brn_sf
+```
+
+### District
+```{r}
+#| echo: true
+dis_sf
+```
+
+### Mukim
+```{r}
+#| echo: true
+mkm_sf
+```
+
+### Kampong
+```{r}
+#| echo: true
+kpg_sf
+```
+
+### Forest Reserves
+```{r}
+#| echo: true
+fr_sf
+```
+
+:::::
+
+## EDA (Biggest area)
+::::: {.panel-tabset}
+### District
+```{r}
+#| echo: true
+dis_sf %>%
+  select(district, perimeter, area) %>%
+  arrange(desc(area))
+```
+
+### Mukim
+```{r}
+#| echo: true
+mkm_sf %>%
+  select(mukim, district, area) %>%
+  arrange(desc(area))
+```
+
+### Kampong
+```{r}
+#| echo: true
+kpg_sf %>%
+  select(kampong, mukim, district, area) %>%
+  arrange(desc(area))
+```
+
+### Forest Reserves
+```{r}
+#| echo: true
+fr_sf %>%
+  select(name, area) %>%
+  arrange(desc(area))
+```
+:::::
+
+## Areal Plots
+::::: {.panel-tabset}
+
+### Brunei
+```{r}
+#| echo: true
+#| fig-width: 13
+#| #| fig-width: 12
+mapview(brn_sf, zcol="name", label.name = "Brunei")
+```
+
+### District
+```{r}
+#| echo: true
+#| fig-width: 13
+mapview(dis_sf, zcol="district", label.name = "District")
+```
+
+### Mukim
+```{r}
+#| echo: true
+#| fig-width: 13
+mapview(mkm_sf, zcol="mukim", label.name = "Mukim")
+```
+
+### Kampong
+```{r}
+#| echo: true
+#| fig-width: 13
+mapview(kpg_sf, zcol="kampong", label.name = "Kampong")
+```
+
+### Forest Reserves
+```{r}
+#| echo: true
+#| fig-width: 13
+mapview(fr_sf, zcol="name", label.name = "Forest Reserves")
+```
+
+- 70% of Brunei are forested area but NOT ALL are forest reserves
+:::::
+
+## Study Variable Datasets: Census
+::::: {.panel-tabset}
+
+### Census
+```{r}
+#| echo: true
+census2021
+```
+
+### pop by kpg
+```{r}
+#| echo: true
+census2021 %>%
+  group_by(kampong, mukim, district) %>%
+  summarise(pop = sum(population)) %>%
+  arrange(desc(pop))
+```
+
+### pop by mkm
+```{r}
+#| echo: true
+census2021 %>%
+  group_by(mukim, district) %>%
+  summarise(pop = sum(population)) %>%
+  arrange(desc(pop))
+```
+
+### pop by district
+```{r}
+#| echo: true
+census2021 %>%
+  group_by(district) %>%
+  summarise(pop = sum(population)) %>%
+  arrange(desc(pop))
+```
+
+:::::
+
+## Study Variable (Cont.)
+::: {.columns}
+
+::: {.column width="60%"}
+```{r}
+#| echo: true
+census2021 %>%
+  summarise(sum(population), sum(pop_male), sum(pop_female),
+            sum(pop_bruneian), sum(pop_pr))
+
+census2021 %>%
+  summarise(bruneian_pct = sum(pop_bruneian)/sum(population)*100,
+            pr_pct = sum(pop_pr)/sum(population)*100)
+```
+:::
+
+::: {.column width="30%"}
+
+<br>
+
+- Other available datasets on masjid, schools, healthcare.
+
+- [`https://bruneiverse.github.io/bruneimap/reference/index.html`](https://bruneiverse.github.io/bruneimap/reference/index.html)
+
+- If need additional datasets, can use `{osmdata}` package (Open Street Map)
+
+:::
+
+:::
+
+## Visualisation
+::::: {.panel-tabset}
+### Census
+```{r}
+#| echo: true
+#| fig-width: 13
+mapview(pop_sf, zcol = "population", label = "kampong", layer.name = "Pop. by kampong")
+```
+
+### School (point data)
+::: .columns
+
+::: {.column width="60%"}
+```{r}
+#| echo: true
+#| fig-width: 13
+mapview(sch_sf, zcol = "Sector", layer.name = "Sector") +
+  mapview(sch_sf, zcol = "Cluster", layer.name = "MOE Cluster")
+```
+:::
+
+::: {.column width="30%"}
+
+<br>
+
+- MOE schools are more evenly distributed
+- Private schools more clustered in city centers
+- Limited MORA schools
+- MOE Clusters seems to be cluster spatially, by districts/mukims
+:::
+
+:::
+
+### School by mkm (areal data)
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-width: 13
+mkm_sch <- mkm_sf %>%
+  left_join(
+    sch_sf %>%
+      as_tibble() %>%
+      count(mukim,, name = "count_of_schools"),
+    by = "mukim"
+  ) %>%
+  select(mukim, count_of_schools)
+
+mapview(mkm_sch,
+        zcol = "count_of_schools",
+        layer.name = "School Count",
+        label = "mukim")
+```
+
+<br>
+
+- Seems to be spatially autocorrelated, lets explore more
+:::::
+
+## Spatial autocorrelation on school
+```{r}
+#| echo: true
+#| fig-width: 13
+mkm_sch %>%
+  mutate(rand_count = sample(count_of_schools)) %>%
+  mapview(zcol = "rand_count", layer.name = "School count")
+```
+
+- Hypothetical map if not clustered (random shuffle)
+
+## Spatial autocorrelation on school (cont.)
+
+To verify, we apply Global Moran I Test :
+<br>
+
+::: .columns
+
+::: {.column width="60%"}
+```{r}
+#| echo: true
+#| code-fold: true
+library(sfdep)
+mkm_sch$count_of_schools[is.na(mkm_sch$count_of_schools)] <- 0
+nb <- st_contiguity(mkm_sch)
+wt <- st_weights(nb)
+global_moran_test(mkm_sch$count_of_schools, nb, wt)
+```
+:::
+
+::: {.column width="30%"}
+
+<br>
+
+- I value of **0.457** > 0, implying Positive Autocorrelation
+- statistically significant results low p-value of $\mathbf{4.54 \times 10^{-6}} < 0.001$
+
+:::
+
+:::
+
+## Census vs School Count
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-width: 13
+mapview(pop_sf %>%
+          group_by(mukim) %>%
+          summarise(pop = sum(population, na.rm = TRUE)),
+        zcol = "pop",
+        layer.name = " Population"
+) |
+  mapview(mkm_sch,
+          zcol = "count_of_schools",
+          layer.name = "School Count",
+          label = "mukim")
+```
+
+- Not all mukims with high population has high count of schools
+
+
+## Key Takeway
+- Basic recap of spatial data & spatial analysis
+- Introducing datasets available on bruneimap
+- Visualising datas from brunei map
+
+**Next Steps**
+
+- Engage with the Brunei R User Group
+- Join our future workshops and meetups
+- Follow us `@brunei.r.user` for updates! 🚀
+
 
 # Thanks! {.transition-slide-ubdblue}
 
