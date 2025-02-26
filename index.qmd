@@ -69,7 +69,6 @@ About Us
 <br>
 
 **Plan for today**
-
 - Part I: refresher on spatial data & analysis
 
 - Part II: demonstrate datasets & features of `{bruneimap}`
@@ -734,7 +733,7 @@ census2021 %>%
 
 - Other available datasets on masjid, schools, healthcare.
 
-- [`https://bruneiverse.github.io/bruneimap/reference/index.html`](https://bruneiverse.github.io/bruneimap/reference/index.html)
+- Link: [Bruneimap Reference](https://bruneiverse.github.io/bruneimap/reference/index.html)
 
 - If need additional datasets, can use `{osmdata}` package (Open Street Map)
 
