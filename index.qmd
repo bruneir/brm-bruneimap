@@ -37,9 +37,9 @@ theme_set(theme_bw())
 cat(readr::read_file("maths_shortcuts.tex"))
 ```
 
-Welcome to the First Brunei R User Group Meetup of 2025! 🎉
+Welcome to the First Brunei R User Group Meetup of 2025! 
 
-Celebrating our 1st Anniversary
+Celebrating our 1st Anniversary! 🎉
 
 > "The RUGS mission is to facilitate the person-to-person exchange of knowledge in small group settings on a global scale."
 > — *R Consortium*
@@ -65,13 +65,16 @@ About Us
 **Past Events:** Intro to R Workshop, R>aya Meetup & Sharing Sessions
 <br>
 
-**Goal:** In conjunction with National Day, our team present you `{bruneimap}` package, containing spatial data on Brunei (country, amenities)
+**Goal:** In conjunction with National Day, our team present you `{bruneimap}` package, containing spatial data on Brunei (boundaries & amenities)
 <br>
 
 **Plan for today**
-- Part I: refresher on spatial data & analysis
 
-- Part II: demonstrate datasets & features of `{bruneimap}`
+📍 Part I: Refresher on spatial data & analysis
+
+🗺️ Part II: Demonstration of `{bruneimap}`datasets & features
+
+🎉 BONUS: refreshment & networking 
 
 # I) Introduction {.transition-slide-ubdyellow}
 
@@ -384,6 +387,35 @@ p2
 
 :::
 
+## How to meaure this pattern?
+
+One way is to use Global Moran's I test [-@moran1948interpretation], defined as:
+$$
+I = \frac{M}{\sum_{i}{\sum_{j}{w_{ij}}}} \frac{\sum_{i}{\sum_{j}{w_{ij}(y_i - \bar{y})(y_j - \bar{y})}}}{\sum_{i}{(y_i - \bar{y})^2}} \in [-1, 1]
+$$
+where $w_{ij}$ is the "spatial weight" between locations $i$ and $j$.
+
+::: .columns
+
+::: {.column width="50%"}
+**Interpretation**
+
+- Value $\approx +1$: +ve autocorrelation (clustering)
+
+- Value $\approx -1$: -ve autocorrelation
+
+- Values $\approx 0$: randomness
+:::
+
+::: {.column width="50%"}
+Test the hypothesis:
+
+- $H_0: I = 0$ (no spatial autocorrelation),
+
+- $H_1: I \neq 0$ (presence of spatial autocorrelation).
+:::
+
+:::
 
   <!-- ## Statistical test -->
 
@@ -391,7 +423,7 @@ p2
 
   <!-- - A test of "global" trends: Looks for evidence of spatial heterogeneity across the entire study area indexed by $i=1,\dots,M$. -->
 
-  <!-- - The Moran's I test statistic [-@moran1948interpretation] is defined as: -->
+<!-- - The Moran's I test statistic [-@moran1948interpretation] is defined as: -->
 <!-- $$ -->
 <!-- I = \frac{M}{\sum_{i}{\sum_{j}{w_{ij}}}} \frac{\sum_{i}{\sum_{j}{w_{ij}(y_i - \bar{y})(y_j - \bar{y})}}}{\sum_{i}{(y_i - \bar{y})^2}} \in [-1, 1] -->
 <!-- $$ -->
@@ -567,8 +599,12 @@ p2
 ### Brunei
 ```{r}
 #| echo: true
+# install.packages("bruneimap")       # library(bruneimap)
 brn_sf
 ```
+
+- Notice geometry type is `Geometry` due to "multipolygon"
+- Essentially still areal data
 
 ### District
 ```{r}
@@ -582,11 +618,16 @@ dis_sf
 mkm_sf
 ```
 
+- Brunei consists **39** mukims
+- Related variables: centre `x`, `y`, `perimeter`, `area`, etc
+
 ### Kampong
 ```{r}
 #| echo: true
 kpg_sf
 ```
+
+- Standardised to "**Kg.** ABC"
 
 ### Forest Reserves
 ```{r}
@@ -622,6 +663,8 @@ kpg_sf %>%
   arrange(desc(area))
 ```
 
+- On mukim & kampong level, not just those in belait are largest in size
+
 ### Forest Reserves
 ```{r}
 #| echo: true
@@ -639,35 +682,35 @@ fr_sf %>%
 #| echo: true
 #| fig-width: 13
 #| #| fig-width: 12
-mapview(brn_sf, zcol="name", label.name = "Brunei")
+mapview(brn_sf, zcol="name", layer.name = "Country Boundary")
 ```
 
 ### District
 ```{r}
 #| echo: true
 #| fig-width: 13
-mapview(dis_sf, zcol="district", label.name = "District")
+mapview(dis_sf, zcol="district", layer.name = "District")
 ```
 
 ### Mukim
 ```{r}
 #| echo: true
 #| fig-width: 13
-mapview(mkm_sf, zcol="mukim", label.name = "Mukim")
+mapview(mkm_sf, zcol="mukim", layer.name = "Mukim")
 ```
 
 ### Kampong
 ```{r}
 #| echo: true
 #| fig-width: 13
-mapview(kpg_sf, zcol="kampong", label.name = "Kampong")
+mapview(kpg_sf, zcol="kampong", layer.name = "Kampong")
 ```
 
 ### Forest Reserves
 ```{r}
 #| echo: true
 #| fig-width: 13
-mapview(fr_sf, zcol="name", label.name = "Forest Reserves")
+mapview(fr_sf, zcol="name", layer.name = "Forest Reserves")
 ```
 
 - 70% of Brunei are forested area but NOT ALL are forest reserves
@@ -682,25 +725,7 @@ mapview(fr_sf, zcol="name", label.name = "Forest Reserves")
 census2021
 ```
 
-### pop by kpg
-```{r}
-#| echo: true
-census2021 %>%
-  group_by(kampong, mukim, district) %>%
-  summarise(pop = sum(population)) %>%
-  arrange(desc(pop))
-```
-
-### pop by mkm
-```{r}
-#| echo: true
-census2021 %>%
-  group_by(mukim, district) %>%
-  summarise(pop = sum(population)) %>%
-  arrange(desc(pop))
-```
-
-### pop by district
+### Pop. by district
 ```{r}
 #| echo: true
 census2021 %>%
@@ -709,18 +734,52 @@ census2021 %>%
   arrange(desc(pop))
 ```
 
+### Pop. by mkm
+```{r}
+#| echo: true
+census2021 %>%
+  group_by(mukim, district) %>%
+  summarise(pop = sum(population)) %>%
+  arrange(desc(pop))
+```
+
+### Pop. by kpg
+::: .columns
+
+::: {.column width="70%"}
+```{r}
+#| echo: true
+census2021 %>%
+  group_by(kampong, mukim, district) %>%
+  summarise(pop = sum(population)) %>%
+  arrange(desc(pop))
+```
+:::
+
+::: {.column width="20%"}
+- Massive difference in top 3 kampongs than the rest
+- On kampong-level, pop. in Belait, TuTong stands out! 
+:::
+
+:::
+
+
 :::::
 
-## Study Variable (Cont.)
+## Census EDA (Cont.)
 ::: {.columns}
 
 ::: {.column width="60%"}
 ```{r}
 #| echo: true
 census2021 %>%
-  summarise(sum(population), sum(pop_male), sum(pop_female),
-            sum(pop_bruneian), sum(pop_pr))
+  summarise(sum(population), sum(pop_male), sum(pop_female))
+```
 
+<br>
+
+```{r}
+#| echo: true
 census2021 %>%
   summarise(bruneian_pct = sum(pop_bruneian)/sum(population)*100,
             pr_pct = sum(pop_pr)/sum(population)*100)
@@ -741,8 +800,7 @@ census2021 %>%
 
 :::
 
-## Visualisation
-::::: {.panel-tabset}
+## Visualisation of Census
 ### Census
 ```{r}
 #| echo: true
@@ -750,15 +808,51 @@ census2021 %>%
 mapview(pop_sf, zcol = "population", label = "kampong", layer.name = "Pop. by kampong")
 ```
 
-### School (point data)
+
+## Example Analysis on School Data
+
+<br>
+
+Topic Question
+
+- Are schools in Brunei evenly distributed?
+
+- Any spatial patterns?
+
+- Do school locations effectively serve the population? (are school clusters aligned with high-population areas?)
+
+
+## 1) Are schools in Brunei evenly distributed?
+::::: {.panel-tabset}
+
+### Raw Data
+``` {r}
+sch_sf
+```
+
+### By Sector
 ::: .columns
 
 ::: {.column width="60%"}
 ```{r}
 #| echo: true
-#| fig-width: 13
-mapview(sch_sf, zcol = "Sector", layer.name = "Sector") +
-  mapview(sch_sf, zcol = "Cluster", layer.name = "MOE Cluster")
+#| code-fold: true
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+#| fig-align: center
+ggplot() +
+  geom_sf(data = kpg_sf, fill = NA, col = "grey", lwd = 0.3) +
+  geom_sf(data = mkm_sf, fill = NA, col = "black", lwd = 0.5) +
+  geom_sf(data = dis_sf, fill = NA, col = "black", lwd = 1) +
+  geom_sf(data = sch_sf, 
+          aes(col = Sector),
+          size = 2) +
+  scale_color_brewer(palette = "Set2") +
+  labs(x = NULL,
+       y = NULL,
+       col = NULL) +
+  theme_bw()
 ```
 :::
 
@@ -769,12 +863,50 @@ mapview(sch_sf, zcol = "Sector", layer.name = "Sector") +
 - MOE schools are more evenly distributed
 - Private schools more clustered in city centers
 - Limited MORA schools
-- MOE Clusters seems to be cluster spatially, by districts/mukims
-:::
 
 :::
 
-### School by mkm (areal data)
+:::
+
+### By Cluster
+::: .columns
+
+::: {.column width="60%"}
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-width: 7
+#| fig-height: 5.5
+#| out-width: 100%
+#| fig-align: center
+ggplot() +
+  geom_sf(data = kpg_sf, fill = NA, col = "grey", lwd = 0.3) +
+  geom_sf(data = mkm_sf, fill = NA, col = "black", lwd = 0.5) +
+  geom_sf(data = dis_sf, fill = NA, col = "black", lwd = 1) +
+  geom_sf(data = sch_sf %>% filter(Cluster != "NA"), 
+          aes(col = Cluster),
+          size = 2) +
+  scale_color_brewer(palette = "Set2") +
+  labs(x = NULL,
+       y = NULL,
+       col = NULL) +
+  theme_bw()
+```
+:::
+
+::: {.column width="30%"}
+
+<br>
+
+- MOE Clusters seems to be clustered spatially, by districts/mukims
+
+:::
+
+:::
+
+:::::
+
+## School by mukim
 ```{r}
 #| echo: true
 #| code-fold: true
@@ -794,12 +926,12 @@ mapview(mkm_sch,
         label = "mukim")
 ```
 
-<br>
+- Most schools clustered around shoreline
 
-- Seems to be spatially autocorrelated, lets explore more
-:::::
+- Seems to be spatially autocorrelated, lets explore more!
 
-## Spatial autocorrelation on school
+
+## 2) Spatial autocorrelation on school
 ```{r}
 #| echo: true
 #| fig-width: 13
@@ -840,7 +972,7 @@ global_moran_test(mkm_sch$count_of_schools, nb, wt)
 
 :::
 
-## Census vs School Count
+## 3) School clusters aligned with high-population areas?
 ```{r}
 #| echo: true
 #| code-fold: true
@@ -857,7 +989,21 @@ mapview(pop_sf %>%
           label = "mukim")
 ```
 
-- Not all mukims with high population has high count of schools
+- Generally yes except Brunei-Muara where,
+- some high-population mukims do not have many schools
+
+## Implications
+**Q1: Are schools in Brunei evenly distributed?**
+
+A: No, mostly clustered around shoreline. MOE schools more evenly distributed. Private schools mostly in city.
+
+**Q2: Any spatial patterns?**
+
+A: Yes. Positive Autocorrelation. There are clusters, mukims with high school count are near each other.
+
+**Q3: Do school locations effectively serve the population?**
+
+A: Most school clusters aligned with high-population areas. Except Brunei-Muara, where some high-population mukims do not have many schools.
 
 
 ## Key Takeway
