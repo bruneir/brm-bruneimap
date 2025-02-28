@@ -74,7 +74,7 @@ About Us
 
 🗺️ Part II: Demonstration of `{bruneimap}`datasets & features
 
-🎉 BONUS: refreshment & networking 
+🎉 BONUS: Refreshment & networking 
 
 # I) Introduction {.transition-slide-ubdyellow}
 
@@ -395,12 +395,14 @@ I = \frac{M}{\sum_{i}{\sum_{j}{w_{ij}}}} \frac{\sum_{i}{\sum_{j}{w_{ij}(y_i - \b
 $$
 where $w_{ij}$ is the "spatial weight" between locations $i$ and $j$.
 
+<br>
+
 ::: .columns
 
 ::: {.column width="50%"}
 **Interpretation**
 
-- Value $\approx +1$: +ve autocorrelation (clustering)
+- Value $\approx +1$: +ve autocorrelation
 
 - Value $\approx -1$: -ve autocorrelation
 
@@ -408,7 +410,7 @@ where $w_{ij}$ is the "spatial weight" between locations $i$ and $j$.
 :::
 
 ::: {.column width="50%"}
-Test the hypothesis:
+**Hypothesis test**
 
 - $H_0: I = 0$ (no spatial autocorrelation),
 
@@ -618,7 +620,7 @@ dis_sf
 mkm_sf
 ```
 
-- Brunei consists **39** mukims
+- Consists **39** mukims
 - Related variables: centre `x`, `y`, `perimeter`, `area`, etc
 
 ### Kampong
@@ -627,7 +629,7 @@ mkm_sf
 kpg_sf
 ```
 
-- Standardised to "**Kg.** ABC"
+- Standardised to "**Kg.** XXX"
 
 ### Forest Reserves
 ```{r}
@@ -663,7 +665,7 @@ kpg_sf %>%
   arrange(desc(area))
 ```
 
-- On mukim & kampong level, not just those in belait are largest in size
+- On mukim & kampong level, not just those in Belait are largest in size
 
 ### Forest Reserves
 ```{r}
@@ -713,7 +715,7 @@ mapview(kpg_sf, zcol="kampong", layer.name = "Kampong")
 mapview(fr_sf, zcol="name", layer.name = "Forest Reserves")
 ```
 
-- 70% of Brunei are forested area but NOT ALL are forest reserves
+- 70% of Brunei are forests but **not all designated as forest reserves**
 :::::
 
 ## Study Variable Datasets: Census
@@ -744,9 +746,6 @@ census2021 %>%
 ```
 
 ### Pop. by kpg
-::: .columns
-
-::: {.column width="70%"}
 ```{r}
 #| echo: true
 census2021 %>%
@@ -754,15 +753,8 @@ census2021 %>%
   summarise(pop = sum(population)) %>%
   arrange(desc(pop))
 ```
-:::
 
-::: {.column width="20%"}
-- Massive difference in top 3 kampongs than the rest
-- On kampong-level, pop. in Belait, TuTong stands out! 
-:::
-
-:::
-
+- On kampong-level, Belait & Tutong population stands out! 
 
 :::::
 
@@ -801,7 +793,6 @@ census2021 %>%
 :::
 
 ## Visualisation of Census
-### Census
 ```{r}
 #| echo: true
 #| fig-width: 13
@@ -849,10 +840,7 @@ ggplot() +
           aes(col = Sector),
           size = 2) +
   scale_color_brewer(palette = "Set2") +
-  labs(x = NULL,
-       y = NULL,
-       col = NULL) +
-  theme_bw()
+  theme_void()
 ```
 :::
 
@@ -887,10 +875,7 @@ ggplot() +
           aes(col = Cluster),
           size = 2) +
   scale_color_brewer(palette = "Set2") +
-  labs(x = NULL,
-       y = NULL,
-       col = NULL) +
-  theme_bw()
+  theme_void()
 ```
 :::
 
@@ -965,7 +950,7 @@ global_moran_test(mkm_sch$count_of_schools, nb, wt)
 
 <br>
 
-- I value of **0.457** > 0, implying Positive Autocorrelation
+- I value of **0.457** > 0, implying **Positive Autocorrelation**
 - statistically significant results low p-value of $\mathbf{4.54 \times 10^{-6}} < 0.001$
 
 :::
@@ -1008,8 +993,10 @@ A: Most school clusters aligned with high-population areas. Except Brunei-Muara,
 
 ## Key Takeway
 - Basic recap of spatial data & spatial analysis
-- Introducing datasets available on bruneimap
-- Visualising datas from brunei map
+- Introduce & visualise datasets on `{bruneimap}`
+- Sample analysis on `sch_sf`
+
+Explore Further: Can you apply similar analysis to masjid locations in Brunei? How do their distributions align with population needs? 🕌
 
 **Next Steps**
 
